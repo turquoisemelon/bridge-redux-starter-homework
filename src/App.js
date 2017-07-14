@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { connect } from 'react-redux';
 import { addProduct } from './actions';
+import { removeProduct } from './actions';
 import Chance from 'chance';
 export const chance = Chance();
 
@@ -22,6 +23,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   add: addProduct,
+  remove: removeProduct,
 };
 
 const Product = (props) => <div>{props.name}</div>;
@@ -29,6 +31,8 @@ const Product = (props) => <div>{props.name}</div>;
 const DaBest = ({name}) => <h1>The Best: {name}</h1>;
 
 const AdderButton = ({add}) => <button onClick={ () => add({ name: 'Sofa' }) }>Add Sofa</button>
+
+const RemoverButton = ({remove}) => <button onClick={ () => remove() }>Remove Sofa</button>
 
 class App extends Component {
 
@@ -49,13 +53,13 @@ class App extends Component {
 
   render() {
     const { products, add, whoIsTheBest } = this.props;
-    debugger;
     return (
       <div>
         <DaBest name={whoIsTheBest} />
         {products.map(product => <Product name={product.name} key={product.id} />)}
 
         <AdderButton { ...this.props } />
+        <RemoverButton { ...this.props } />
       </div>
     );
   }
