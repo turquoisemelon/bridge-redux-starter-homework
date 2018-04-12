@@ -12,9 +12,11 @@ const INITIAL_STATE = {
 
 export const products = (state = INITIAL_STATE, {type, payload}) => {
     switch (type) {
-        case ACTION_TYPES.addProduct:
+        case ACTION_TYPES.ADD_PRODUCT:
             // using object spread, I am saying - I want to return the old state, except change the productList property
             return {...state, productList: state.productList.concat(payload.product)};
+            case ACTION_TYPES.REMOVE_PRODUCT:
+                return {...state, productList: state.productList.slice(0, payload.product.id)};
     }
     return state;
 };
