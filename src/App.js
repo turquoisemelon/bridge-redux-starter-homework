@@ -1,16 +1,26 @@
 import React, {Component} from 'react';
 import './App.css';
 import {connect} from 'react-redux';
-import {addProduct, removeProduct} from './actions/index';
+import {addProduct, removeProduct, setProductName, setProductDepartment, clearInputField} from './actions/index';
 import Chance from 'chance';
 
 export const chance = Chance();
 
-const Product = (props) => <div>{props.name}</div>;
+const Product = (props) => {
+    return <div>
+        {props.name} | {props.department}
+    </div>;
+}
 
-const DaBest = ({name}) => <h1>The Best: {name}</h1>;
+const Title = ({text}) => <h1>{text}</h1>;
 
-const AdderButton = ({addProduct}) => <button onClick={() => addProduct({name: 'Sofa'})}>Add Sofa</button>
+const AdderButton = ({addProduct, productList, productName, productDepartment, clearInputField}) =>
+<button onClick={() => {
+    addProduct({id: productList.length+1, name: productName, department: productDepartment});
+    clearInputField('');
+}}>
+    Add Product
+</button>
 
 const RemoverButton = ({removeProduct, productList}) => <button onClick={() => removeProduct({id: productList.length-1})}>Remove Product</button>
 
@@ -30,14 +40,29 @@ class App extends Component {
   }
 
   render() {
-    const {productList, add, whoIsTheBest} = this.props;
-    return (
-      <div>
-        <DaBest name={whoIsTheBest}/>
-        {productList.map(product => <Product name={product.name} key={product.id}/>)}
+    const {productList, add, setProductName, setProductDepartment, productName, productDepartment} = this.props;
 
-        <AdderButton {...this.props} />
-        <RemoverButton {...this.props} />
+    return (
+      <div className="products">
+        <div className="product-form">
+            <Title text="Product Information Form"/>
+            <input
+                value={productName || ''}
+                onChange={(event) => setProductName(event.target.value)}
+                placeholder="name"
+            />
+            <input
+                value={productDepartment || ''}
+                onChange={(event) => setProductDepartment(event.target.value)}
+                placeholder="department"
+            />
+            <AdderButton {...this.props} />
+        </div>
+        <div className="product-list">
+            <Title text="Product List"/>
+            {productList.map(product => <Product name={product.name} key={product.id} department={product.department}/>)}
+            <RemoverButton {...this.props} />
+        </div>
       </div>
     );
   }
@@ -49,7 +74,8 @@ class App extends Component {
 const mapStateToProps = state => {
   return {
     productList: state.products.productList,
-    whoIsTheBest: 'Della',
+    productName: state.products.productName,
+    productDepartment: state.products.productDepartment,
 
     // an example of how to derive state in the mapStateToProps function - this is a specific 'subset' of the full list
     lowStockProducts: state.products.productList.filter(prod => prod.stock && prod.stock < 4),
@@ -59,6 +85,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   addProduct: addProduct,
   removeProduct: removeProduct,
+  setProductName: setProductName,
+  setProductDepartment: setProductDepartment,
+  clearInputField: clearInputField,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
