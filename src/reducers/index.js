@@ -25,6 +25,8 @@ export const products = (state = INITIAL_STATE, {type, payload}) => {
             return {...state, productDepartment: payload.productDepartment};
         case ACTION_TYPES.CLEAR_INPUT_FIELD:
             return {...state, productName: payload.param, productDepartment: payload.param};
+        case ACTION_TYPES.GET_SEARCH_PARAM:
+            return {...state, searchString: payload.searchParam};
     }
     return state;
 };

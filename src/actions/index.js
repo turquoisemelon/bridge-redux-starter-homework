@@ -4,6 +4,7 @@ export const ACTION_TYPES = {
   SET_PRODUCT_NAME: 'SET_PRODUCT_NAME',
   SET_PRODUCT_DEPARTMENT: 'SET_PRODUCT_DEPARTMENT',
   CLEAR_INPUT_FIELD: 'CLEAR_INPUT_FIELD',
+  GET_SEARCH_PARAM: 'GET_SEARCH_PARAM',
 };
 
 export const addProduct = (product) => ({
@@ -38,5 +39,12 @@ export const clearInputField = (param) => ({
     type: ACTION_TYPES.CLEAR_INPUT_FIELD,
     payload: {
       param,
+    }
+});
+
+export const getSearchParam = (searchParam) => ({
+    type: ACTION_TYPES.GET_SEARCH_PARAM,
+    payload: {
+      searchParam,
     }
 });

@@ -1,7 +1,14 @@
 import React, {Component} from 'react';
 import './App.css';
 import {connect} from 'react-redux';
-import {addProduct, removeProduct, setProductName, setProductDepartment, clearInputField} from './actions/index';
+import {
+    addProduct,
+    removeProduct,
+    setProductName,
+    setProductDepartment,
+    clearInputField,
+    getSearchParam
+} from './actions/index';
 import Chance from 'chance';
 
 export const chance = Chance();
@@ -40,7 +47,7 @@ class App extends Component {
   }
 
   render() {
-    const {productList, add, setProductName, setProductDepartment, productName, productDepartment} = this.props;
+    const {productList, filteredProductList, setProductName, setProductDepartment, productName, productDepartment, searchString, getSearchParam} = this.props;
 
     return (
       <div className="products">
@@ -60,7 +67,17 @@ class App extends Component {
         </div>
         <div className="product-list">
             <Title text="Product List"/>
-            {productList.map(product => <Product name={product.name} key={product.id} department={product.department}/>)}
+            <div className="search-bar">
+                <input
+                    type="text"
+                    placeholder="Search Products"
+                    onChange={(event) => getSearchParam(event.target.value.toLowerCase())}
+                />
+            </div>
+            {filteredProductList
+                ? filteredProductList.map(product => <Product name={product.name} key={product.id} department={product.department}/>)
+                : productList.map(product => <Product name={product.name} key={product.id} department={product.department}/>)
+            }
             <RemoverButton {...this.props} />
         </div>
       </div>
@@ -76,6 +93,8 @@ const mapStateToProps = state => {
     productList: state.products.productList,
     productName: state.products.productName,
     productDepartment: state.products.productDepartment,
+    searchString: state.products.searchString,
+    filteredProductList: state.products.searchString ? state.products.productList.filter((product) => product.name.search(state.products.searchString) !== -1) : null,
 
     // an example of how to derive state in the mapStateToProps function - this is a specific 'subset' of the full list
     lowStockProducts: state.products.productList.filter(prod => prod.stock && prod.stock < 4),
@@ -88,6 +107,7 @@ const mapDispatchToProps = {
   setProductName: setProductName,
   setProductDepartment: setProductDepartment,
   clearInputField: clearInputField,
+  getSearchParam: getSearchParam,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
